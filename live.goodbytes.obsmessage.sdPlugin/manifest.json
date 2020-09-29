@@ -1,0 +1,41 @@
+{
+  "Actions": [
+    {
+      "Icon": "actionIcon",
+      "Name": "Send Message",
+      "States": [
+        {
+          "Image": "sendMessageIcon"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Send a custom message to OBS via the OBS Websocket plugin",
+      "UUID": "live.goodbytes.obsmessage.action"
+    }
+  ],
+  "Category": "OBS Message",
+  "CategoryIcon": "categoryIcon",
+  "SDKVersion": 2,
+  "Author": "MrGoodBytes",
+  "CodePath": "index.html",
+  "PropertyInspectorPath": "propertyinspector/index.html",
+  "Description": "Send a custom message to OBS via the OBS Websocket plugin",
+  "Name": "OBS Message",
+  "Icon": "pluginIcon",
+  "URL": "https://www.github.com/mrgoodbytes8667/obsmessage",
+  "Version": "0.1.0",
+  "OS": [
+    {
+      "Platform": "mac",
+      "MinimumVersion": "10.11"
+    },
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Software": 
+    {
+        "MinimumVersion" : "4.1"
+    }
+}

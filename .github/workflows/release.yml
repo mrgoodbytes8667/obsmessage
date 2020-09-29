@@ -1,0 +1,93 @@
+name: Release
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the main branch
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch: []
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        if: success()
+      
+      - name: Copy README to Deploy Path
+        shell: powershell
+        run: cp README.md live.goodbytes.obsmessage.sdPlugin\README.md
+
+      - name: Get Deployment Tool
+        run: C:\msys64\usr\bin\wget.exe -q https://developer.elgato.com/documentation/stream-deck/distributiontool/DistributionToolWindows.zip
+
+      - name: Unzip Deployment Tool
+        if: success()
+        shell: powershell
+        run: powershell.exe -NoP -NonI -Command "Expand-Archive '.\DistributionToolWindows.zip' '.\'"
+
+      - name: Create Release Folder
+        if: success()
+        shell: powershell
+        run: mkdir Release
+
+      - name: Package
+        if: success()
+        shell: powershell
+        run: .\DistributionTool.exe -b -i "live.goodbytes.obsmessage.sdPlugin" -o Release
+
+      - uses: actions/upload-artifact@v2
+        if: success()
+        with:
+          name: live.goodbytes.obsmessage.streamDeckPlugin
+          path: Release\live.goodbytes.obsmessage.streamDeckPlugin
+
+      - name: Create Release
+        if: success()
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: OBS Message ${{ github.ref }}
+          draft: true
+          prerelease: false
+          body: |
+            Description
+
+            ### Features
+
+            ### Changes
+
+            ### Bugs
+
+            ### Install
+
+            To install, download the file [live.goodbytes.obsmessage.streamDeckPlugin](https://github.com/mrgoodbytes8667/obsmessage/releases/download/${{ github.ref }}/live.goodbytes.obsmessage.streamDeckPlugin) below and double click. You will be prompted to install it inside Stream Deck.
+
+            ### Pre-requisites
+
+            - [Kruiz Control](https://github.com/Kruiser8/Kruiz-Control)
+            - [OBS Websocket Plugin](https://github.com/Palakis/obs-websocket/releases)
+            - [Stream Deck (hardware, mobile, or keyboard)](https://www.elgato.com/en/gaming/stream-deck)
+            - [Stream Deck (software)](https://www.elgato.com/en/gaming/downloads) 4.1 or later.
+
+      - name: Upload Release Asset
+        if: success()
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: Release\live.goodbytes.obsmessage.streamDeckPlugin
+          asset_name: live.goodbytes.obsmessage.streamDeckPlugin
+          asset_content_type: application/octet-stream

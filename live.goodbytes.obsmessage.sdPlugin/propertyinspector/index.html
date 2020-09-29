@@ -1,0 +1,334 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>live.goodbytes.obsmessage PI</title>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="css/sdpi.css">
+</head>
+
+<body>
+<div class="sdpi-wrapper">
+
+    <!--
+    <div class="sdpi-item">
+        <div class="sdpi-item-label empty"></div>
+        <button class="sdpi-item-value" id="testsetglobal" value="test">Test Set</button>
+        <button class="sdpi-item-value" id="testgetglobal" value="test">Test Get</button>
+    </div>
+    -->
+
+    <div class="sdpi-heading">Message</div>
+
+    <div type="textarea" class="sdpi-item" id="messagegroup_message">
+        <div class="sdpi-item-label">Message</div>
+        <div class="sdpi-item-value textarea">
+            <textarea class="obs-onchange" type="textarea" maxlength="2000" id="message" required></textarea>
+            <label for="message">0/2000</label>
+        </div>
+    </div>
+
+    <div type="textarea" class="sdpi-item" id="message_only">
+        <div class="sdpi-item-label">Data</div>
+        <span class="sdpi-item-value textarea">
+            <textarea class="obs-onchange" type="textarea" maxlength="2000" id="data"></textarea>
+            <label for="data">0/2000</label>
+        </span>
+    </div>
+
+    <div class="sdpi-heading">OBS Websocket</div>
+
+    <div class="sdpi-item">
+        <details id="status-details" class="message question">
+            <summary id="status-summary">Connection to OBS Websocket Pending...</summary>
+            <h4 class="obs-error">Information:</h4>
+            <p class="obs-error">Unable to connect to OBS Websocket. Please ensure that you have the latest version of
+                OBS Websocket installed and the correct settings below.</p>
+            <a class="info obs-error" href="https://github.com/Palakis/obs-websocket/releases">Get OBS Websocket
+                Plugin</a>
+        </details>
+    </div>
+
+    <div class="sdpi-item" id="your_name_required" title="Enter your OBS websockets IP address.">
+        <div class="sdpi-item-label">IP Address</div>
+        <input class="sdpi-item-value obs-onchange" id="ipAddress" name="ipAddress" value="" placeholder="127.0.0.1"
+               required
+               pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}">
+    </div>
+
+    <div class="sdpi-item" id="anumber" title="Enter the port for OBS websockets. Defaults to 4444.">
+        <div class="sdpi-item-label">Port</div>
+        <input class="sdpi-item-value obs-onchange" id="port" name="port" value="" inputmode="numeric" type="number"
+               placeholder="4444" required>
+    </div>
+
+    <div class="sdpi-item" id="your_password" title="Enter the password for OBS websockets.">
+        <div class="sdpi-item-label">Password</div>
+        <input type="password" id="password" class="sdpi-item-value obs-onchange" value=""
+               placeholder="Enter your password">
+    </div>
+
+    <div class="sdpi-item">
+        <div class="sdpi-item-label empty"></div>
+        <button class="sdpi-item-value obs-sendvalue-button" id="obsconnect" value="test">Connect</button>
+        <button class="sdpi-item-value obs-sendvalue-button" id="obsdisconnect" value="test">Disconnect</button>
+        <button class="sdpi-item-value" id="obsreset" value="test">Reset</button>
+    </div>
+
+    <div class="sdpi-item">
+        <div class="sdpi-item-label empty"></div>
+        <details class="sdpi-item-value">
+            <summary>Note on Settings</summary>
+            <p>The OBS Websocket settings are global! Only one connection is made. Changing these settings, connecting, disconnecting, or resetting affects all actions.</p>
+        </details>
+    </div>
+
+</div>
+
+<script src="../js/jquery.js"></script>
+<script src="common.js"></script>
+<script src="../js/kc.js"></script>
+
+<script>
+
+    const $ipAddress = $("#ipAddress");
+    const $port = $("#port");
+    const $password = $("#password");
+    const $message = $("#message");
+    const $data = $("#data");
+
+    const $obsConnect = $('#obsconnect');
+    const $obsDisconnect = $('#obsdisconnect');
+    const $obsReset = $('#obsreset');
+
+    const $statusDetails = $('#status-details');
+    const $statusSummary = $('#status-summary');
+    const $obsError = $('.obs-error');
+
+    /**
+     * @type {{password: string, port: number, ipAddress: string}}
+     */
+    let obsDefaults;
+
+    /** Step 1: Subscribe to the 'connected' event
+     * and call your own initialization method.
+     * The connected - event is emitted, when StreamDeck
+     * has established a connection.
+     * The 'connected' event carries a JSON object containing
+     * necessary information about the connection and the
+     * inital data.
+     */
+    var $localizedStrings = {};
+    var uuid,
+        actionInfo,
+        ctx,
+        lang;
+
+    $SD.on('connected', (jsonObj) => connected(jsonObj));
+    $SD.on('sendToPropertyInspector', (jsonObj) => receivedDataFromPlugin(jsonObj));
+    $SD.on('didReceiveSettings', (jsonObj) => onDidReceiveSettings(jsonObj));
+    $SD.on('didReceiveGlobalSettings', (jsonObj) => onDidReceiveGlobalSettings(jsonObj));
+
+    function receivedDataFromPlugin(jsonObj) {
+        console.log('--- receivedDataFromPlugin --- ', jsonObj);
+        if (jsonObj && jsonObj.payload) {
+            if (jsonObj.payload.hasOwnProperty('obsStatus')) {
+                this.receivedObsStatus(jsonObj.payload.obsStatus);
+            } else if (jsonObj.payload.hasOwnProperty('obsDefaults')) {
+                obsDefaults = jsonObj.payload.obsDefaults;
+            }
+        }
+    }
+
+    function connected(jsonObj) {
+        uuid = jsonObj.uuid;
+        actionInfo = jsonObj.actionInfo.action;
+        ctx = jsonObj.actionInfo.context;
+        lang = jsonObj.applicationInfo.application.language;
+
+        //console.log('Connected index');
+        //console.log(jsonObj);
+
+        $SD.api.getGlobalSettings();
+
+        /** Localization */
+            // if ($localizedStrings && Object.keys($localizedStrings).length > 0) {
+            // 	localizeUI();
+            // }
+
+            // const oClockSelector = document.querySelector(".clockSelector");
+            // Object.keys(clockfaces).map(e => {
+            // 	let option = document.createElement('option');
+            // 	option.setAttribute('value', e);
+            // 	option.setAttribute('label', localize(clockfaces[e].name));
+            // 	oClockSelector.appendChild(option);
+            // });
+
+
+            // request some data from the plugin (e.g. the current clockface of the clock)
+            // var payload = {
+            //         'DATAREQUEST': true
+            //     };
+            //
+            // $SD.api.sendToPlugin(uuid, actionInfo, payload);
+
+        const el = document.querySelector('.sdpi-wrapper');
+        el.classList.remove('hidden');
+
+        console.log('--- OnConnected ---', jsonObj.actionInfo.payload);
+
+
+        if (jsonObj.actionInfo.payload.hasOwnProperty('settings')) {
+            var settings = jsonObj.actionInfo.payload.settings;
+            //console.log('About to log settings');
+            //console.log(jsonObj.actionInfo.payload.settings);
+            // $ipAddress.val(settings.ipAddress);
+            // $port.val(settings.port);
+            // $password.val(settings.password);
+            $message.val(settings.message);
+            $data.val(settings.data);
+
+            setTextAreaLabelText($message);
+            setTextAreaLabelText($data);
+        }
+
+    }
+
+    /**
+     * @param value
+     * @param {string} [param]
+     */
+    function sendValueToPlugin(value, param) {
+
+        console.log("SENDING VALUE TO PLUGIN: ", value, uuid, actionInfo);
+
+        if ($SD && $SD.connection) {
+            const payload = {};
+            if (param) {
+                payload[param] = value;
+            }
+            $SD.api.sendToPlugin(uuid, actionInfo, payload);
+        }
+    }
+
+    /**
+     * @param {object} jsn
+     * @param {string} jsn.action
+     * @param {string} jsn.event
+     * @param {string} jsn.context
+     * @param {string} jsn.device
+     * @param {object} jsn.payload
+     * @param {object} jsn.payload.settings
+     * @param {object} jsn.payload.coordinates
+     * @param {number} jsn.payload.[state]
+     * @param {boolean} jsn.payload.isInMultiAction
+     */
+    function onDidReceiveSettings(jsn) {
+
+    }
+
+    /**
+     * @param {object} jsn
+     * @param {string} jsn.event
+     * @param {object} jsn.payload
+     * @param {object} jsn.payload.settings
+     */
+    function onDidReceiveGlobalSettings(jsn) {
+        const settings = jsn.payload.settings;
+        $ipAddress.val(settings.ipAddress);
+        $port.val(settings.port);
+        $password.val(settings.password);
+    }
+
+    $(document).ready(function () {
+        // $("#connect").click(function () {
+        //     obsConnectDisconnectClicked('connect');
+        // });
+        // $("#disconnect").click(function () {
+        //     obsConnectDisconnectClicked('disconnect');
+        // });
+        $(".obs-onchange").change(function () {
+            sendValueToPlugin($(this).val(), $(this).attr('id'));
+        });
+        $('#testsetglobal').click(function () {
+            $SD.api.setGlobalSettings({'ipAddress': '0.0.0.0', 'port': 1234, 'password': 'codfish'});
+        });
+        $('#testgetglobal').click(function () {
+            $SD.api.getGlobalSettings();
+        });
+        $obsReset.click(function () {
+            $ipAddress.val(obsDefaults.ipAddress);
+            $port.val(obsDefaults.port);
+            $password.val(obsDefaults.password);
+            const change = {'obsChange': true};
+            $SD.api.sendToPlugin(uuid, actionInfo, {
+                ...obsDefaults,
+                ...change
+            });
+        });
+        $('.obs-sendvalue-button').click(function () {
+            sendValueToPlugin($(this).attr('id'), 'obsAction');
+        });
+        $('textarea').keyup(function () {
+            setTextAreaLabelText($(this));
+        });
+    });
+    
+    function setTextAreaLabelText(element) {
+        const length = element.val().length;
+        const maxl = element.attr('maxlength');
+        $("label[for='" + element.attr('id') + "']").text(`${length}/${maxl}`);
+    }
+
+    /**
+     * @deprecated
+     * @param action
+     */
+    function obsConnectDisconnectClicked(action) {
+        const payload = {};
+        payload['obsAction'] = action;
+        payload['ipAddress'] = $ipAddress.val();
+        payload['port'] = $port.val();
+        payload['password'] = password;
+        // $SD.api.setGlobalSettings(payload);
+        $SD.api.sendToPlugin(uuid, actionInfo, payload);
+
+
+    }
+
+    /**
+     * @param {boolean} status
+     */
+    function receivedObsStatus(status) {
+        $statusDetails.removeClass('question');
+        if (status === true) {
+            $statusDetails.removeClass('caution');
+            $statusDetails.addClass('info');
+            $statusSummary.text('Connected to OBS Websocket');
+            $obsError.hide();
+            $obsConnect.hide();
+            $obsDisconnect.show();
+        } else {
+            $statusDetails.removeClass('info');
+            $statusDetails.addClass('caution');
+            $statusSummary.text('Unable to connect to OBS Websocket');
+            $obsError.show();
+            $obsDisconnect.hide();
+            $obsConnect.show();
+        }
+    }
+
+</script>
+
+<!--
+	<div class="sdpi-wrapper hidden">
+		<div type="select" class="sdpi-item">
+			<div class="sdpi-item-label">Face</div>
+			<select class="sdpi-item-value select clockSelector" onchange="sendValueToPlugin(Number(event.target.value), 'clock_index')">
+			</select>
+		</div>
+	</div>
+	-->
+</body>
+
+</html>
