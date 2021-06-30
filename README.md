@@ -16,6 +16,17 @@ A plugin for [Stream Deck](https://developer.elgato.com/documentation/stream-dec
 - [Stream Deck (hardware, mobile, or keyboard)](https://www.elgato.com/en/gaming/stream-deck)
 - [Stream Deck (software)](https://www.elgato.com/en/gaming/downloads) 4.1 or later.
 
+### Plugin Installation
+
+Download the latest live.goodbytes.obsmessage.streamDeckPlugin file from the [Releases](https://github.com/mrgoodbytes8667/obsmessage/releases) page, and simply double click the file to be prompted to install the plugin in Stream Deck.
+
+Alternatively, if you download the fully zipped source code:
+- Unzip obsmessage-main.zip
+- Open File Explorer and navigate to `%appdata%`
+- Navigate to `Roaming\Elgato\StreamDeck\Plugins`
+- Drag and drop the `live.goodbytes.obsmessage.sdPlugin` folder there
+- Close and Reopen the Stream Deck software to see the plugin
+
 ### Inside Kruiz Control
 
 Listen for `OnOBSCustomMessage` as described [here](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md#onobscustommessage)
