@@ -4,7 +4,7 @@
 
 A plugin for [Stream Deck](https://developer.elgato.com/documentation/stream-deck/) to interact with [Kruiz Control](https://github.com/Kruiser8/Kruiz-Control).
 
-_**[If you use OBS v28+ and/or OBS Websockets v5+, this branch is not for you! Please visit the v0.2 branch!](https://github.com/mrgoodbytes8667/obsmessage/tree/0.2)**_
+_**[If you use OBS v27 and earlier+ and/or OBS Websockets v4, this branch is not for you! Please visit the v0.1 branch!](https://github.com/mrgoodbytes8667/obsmessage/tree/0.1)**_
 
 ### Features
 
@@ -14,9 +14,9 @@ _**[If you use OBS v28+ and/or OBS Websockets v5+, this branch is not for you! P
 ### Pre-requisites
 
 - [Kruiz Control](https://github.com/Kruiser8/Kruiz-Control)
-- [OBS Websocket Plugin v4](https://github.com/Palakis/obs-websocket/releases) (Note that OBS v28 no longer supports websocket v4)
+- [OBS Websocket Plugin v5](https://github.com/Palakis/obs-websocket/releases)
 - [Stream Deck (hardware, mobile, or keyboard)](https://www.elgato.com/en/gaming/stream-deck)
-- [Stream Deck (software)](https://www.elgato.com/en/gaming/downloads) 4.1 or later.
+- [Stream Deck (software)](https://www.elgato.com/en/gaming/downloads) 5.2 or later.
 
 ### Plugin Installation
 
