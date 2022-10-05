@@ -4,6 +4,8 @@
 
 A plugin for [Stream Deck](https://developer.elgato.com/documentation/stream-deck/) to interact with [Kruiz Control](https://github.com/Kruiser8/Kruiz-Control).
 
+_**[If you use OBS v28+ and/or OBS Websockets v5+, this branch is not for you! Please visit the v0.2 branch!](https://github.com/mrgoodbytes8667/obsmessage/tree/0.2)**_
+
 ### Features
 
 - Allows you to send a message via the OBS Websocket plugin that can be heard inside Kruiz Control
