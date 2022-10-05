@@ -9,7 +9,7 @@
         }
       ],
       "SupportedInMultiActions": true,
-      "Tooltip": "Send a custom message to OBS via the OBS Websocket plugin",
+      "Tooltip": "Send a custom message to OBS via the OBS Websocket plugin v4",
       "UUID": "live.goodbytes.obsmessage.action"
     }
   ],
@@ -19,7 +19,7 @@
   "Author": "MrGoodBytes",
   "CodePath": "index.html",
   "PropertyInspectorPath": "propertyinspector/index.html",
-  "Description": "Send a custom message to OBS via the OBS Websocket plugin",
+  "Description": "Send a custom message to OBS via the OBS Websocket plugin v4",
   "Name": "OBS Message",
   "Icon": "pluginIcon",
   "URL": "https://www.github.com/mrgoodbytes8667/obsmessage",

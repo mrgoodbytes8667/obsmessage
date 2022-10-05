@@ -12,7 +12,7 @@ A plugin for [Stream Deck](https://developer.elgato.com/documentation/stream-dec
 ### Pre-requisites
 
 - [Kruiz Control](https://github.com/Kruiser8/Kruiz-Control)
-- [OBS Websocket Plugin](https://github.com/Palakis/obs-websocket/releases)
+- [OBS Websocket Plugin v4](https://github.com/Palakis/obs-websocket/releases) (Note that OBS v28 no longer supports websocket v4)
 - [Stream Deck (hardware, mobile, or keyboard)](https://www.elgato.com/en/gaming/stream-deck)
 - [Stream Deck (software)](https://www.elgato.com/en/gaming/downloads) 4.1 or later.
 
