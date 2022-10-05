@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "jquery": "^3.5.1",
+    "jquery": "^3.6.1",
     "obs-websocket-js": "^4.0.1"
   },
   "scripts": {
