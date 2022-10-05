@@ -1,7 +1,7 @@
 {
   "devDependencies": {
     "jquery": "^3.6.1",
-    "obs-websocket-js": "^4.0.1"
+    "obs-websocket-js": "^5.0.2"
   },
   "scripts": {
     "prod": "cp node_modules/obs-websocket-js/dist/obs-websocket.js live.goodbytes.obsmessage.sdPlugin/js/obs-websocket.js && cp node_modules/jquery/dist/jquery.js live.goodbytes.obsmessage.sdPlugin/js/jquery.js"
