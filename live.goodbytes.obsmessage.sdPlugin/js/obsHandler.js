@@ -84,7 +84,7 @@ class ObsHandler {
      * @return {string}
      */
     getOBSAddress() {
-        return this.ipAddress + ':' + this.port.toString();
+        return 'ws://' + this.ipAddress + ':' + this.port.toString();
     }
 
     /**
@@ -95,14 +95,12 @@ class ObsHandler {
         if (this.connected === true && reconnect !== true) {
             return new Promise((resolve, reject) => { resolve(); })
         }
-        const options = {
-            address: this.getOBSAddress()
-        };
+        let password = null;
         if (this.password !== '') {
-            options['password'] = this.password;
+            password = this.password;
         }
-        console.log('--- OBS Websocket: connect() ---', options);
-        return this.obs.connect(options);
+        console.log('--- OBS Websocket: connect() ---', this.getOBSAddress(), password);
+        return this.obs.connect(this.getOBSAddress(), password);
     }
 
     /**
@@ -123,11 +121,13 @@ class ObsHandler {
         if(!this.connected) {
             await this.connect();
         }
-        return this.obs.send('BroadcastCustomMessage', {
-            'realm': 'kruiz-control',
-            'data': {
-                'message': message,
-                'data': (data || '')
+        return this.obs.call('BroadcastCustomEvent', {
+            'eventData': {
+                'realm': 'kruiz-control',
+                'data': {
+                    'message': message,
+                    'data': (data || '')
+                }
             }
         });
     }
