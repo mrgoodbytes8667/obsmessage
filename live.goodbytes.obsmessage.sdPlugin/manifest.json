@@ -23,7 +23,7 @@
   "Name": "OBS Message",
   "Icon": "pluginIcon",
   "URL": "https://www.github.com/mrgoodbytes8667/obsmessage",
-  "Version": "0.1.3",
+  "Version": "0.1.90",
   "OS": [
     {
       "Platform": "mac",

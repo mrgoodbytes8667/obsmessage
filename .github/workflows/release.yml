@@ -69,16 +69,16 @@ jobs:
 
             ### Bugs
 
-            ### Install
+            ## Install
 
             To install, download the file [live.goodbytes.obsmessage.streamDeckPlugin](https://github.com/mrgoodbytes8667/obsmessage/releases/download/${{ github.ref }}/live.goodbytes.obsmessage.streamDeckPlugin) below and double click. You will be prompted to install it inside Stream Deck.
 
-            ### Pre-requisites
+            ## Pre-requisites
 
             - [Kruiz Control](https://github.com/Kruiser8/Kruiz-Control)
             - [OBS Websocket Plugin](https://github.com/Palakis/obs-websocket/releases)
             - [Stream Deck (hardware, mobile, or keyboard)](https://www.elgato.com/en/gaming/stream-deck)
-            - [Stream Deck (software)](https://www.elgato.com/en/gaming/downloads) 4.1 or later.
+            - [Stream Deck (software)](https://www.elgato.com/en/gaming/downloads) 5.3 or later.
 
       - name: Upload Release Asset
         if: success()
